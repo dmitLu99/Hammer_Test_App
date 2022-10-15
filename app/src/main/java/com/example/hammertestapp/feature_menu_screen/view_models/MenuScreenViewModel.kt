@@ -43,10 +43,10 @@ internal class MenuScreenViewModel(
     ))
 
     val testCategoriesContainer: CategoriesContainer = CategoriesContainer(listOf(
-        Category(name = "caregory"),
-        Category(name = "caregory"),
-        Category(name = "caregory"),
-        Category(name = "caregory")
+        Category(name = "caregory", isClicked = true),
+        Category(name = "caregory1", isClicked = false),
+        Category(name = "caregory2", isClicked = false),
+        Category(name = "caregory3", isClicked = false),
     ))
 
     private val _bannersLiveData = MutableLiveData<BannersContainer>()
@@ -64,6 +64,7 @@ internal class MenuScreenViewModel(
 //            _bannersLiveData.postValue(fetchBannersUseCase.execute())
 //            _categoriesLiveData.postValue(fetchCategoriesUseCase.execute())
 //            _menuItemsLiveData.postValue(fetchDomainModelUseCase.execute())
+
             _bannersLiveData.postValue(testBannersContainer)
             _categoriesLiveData.postValue(testCategoriesContainer)
             _menuItemsLiveData.postValue(testMenuItemsContainer)
@@ -86,4 +87,3 @@ internal class MenuScreenViewModel(
         }
     }
 }
-
