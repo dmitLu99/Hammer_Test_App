@@ -7,11 +7,10 @@
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#F6CFD8</item>
-        <item name="colorSecondaryVariant">#14333333</item>
+        <item name="colorSecondaryVariant">#34747474</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>

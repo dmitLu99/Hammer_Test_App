@@ -46,6 +46,7 @@ internal class CategoriesAdapter @Inject constructor(
             if (item.isClicked) changeStateToEnabled() else changeStateToDisabled()
 
             binding.apply {
+                name.text = item.name
                 container.setOnClickListener {
                     if (!item.isClicked) {
 
@@ -59,7 +60,6 @@ internal class CategoriesAdapter @Inject constructor(
                     }
                 }
             }
-
         }
 
         private fun changeStateToEnabled() {
@@ -68,19 +68,30 @@ internal class CategoriesAdapter @Inject constructor(
                 val theme = root.context.theme
                 theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
                 name.setTextColor(typedValue.data)
-                theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
+                theme.resolveAttribute(
+                    com.google.android.material.R.attr.colorSecondary,
+                    typedValue,
+                    true
+                )
                 container.setCardBackgroundColor(typedValue.data)
             }
-
         }
 
         private fun changeStateToDisabled() {
             binding.apply {
                 val typedValue = TypedValue()
                 val theme = root.context.theme
-                theme.resolveAttribute(com.google.android.material.R.attr.colorPrimaryVariant, typedValue, true)
+                theme.resolveAttribute(
+                    com.google.android.material.R.attr.colorPrimaryVariant,
+                    typedValue,
+                    true
+                )
                 container.setCardBackgroundColor(typedValue.data)
-                theme.resolveAttribute(com.google.android.material.R.attr.colorSecondaryVariant, typedValue, true)
+                theme.resolveAttribute(
+                    com.google.android.material.R.attr.colorSecondaryVariant,
+                    typedValue,
+                    true
+                )
                 com.google.android.material.R.attr.color
                 name.setTextColor(root.context.getColor(R.color.category_text))
             }

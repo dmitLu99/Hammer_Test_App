@@ -8,6 +8,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.hammertestapp.R
 import com.example.hammertestapp.databinding.MenuItemBinding
+import com.example.hammertestapp.feature_menu_screen.di.annotations.Menu
 import com.example.hammertestapp.feature_menu_screen.ui.models.MenuItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 internal class MenuItemsAdapter @Inject constructor(
+    @Menu private val requestOptions: RequestOptions
 ) : RecyclerView.Adapter<MenuItemsAdapter.MenuItemViewHolder>() {
 
     private val items: MutableList<MenuItem> = mutableListOf()
@@ -41,21 +43,20 @@ internal class MenuItemsAdapter @Inject constructor(
 
     override fun getItemCount(): Int = items.size
 
-    class MenuItemViewHolder(private val binding: MenuItemBinding) :
+    inner class MenuItemViewHolder(private val binding: MenuItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MenuItem) {
 
-            val requestOption = RequestOptions()
-                .error(R.drawable.ic_error_outline_24)
-                .placeholder(R.drawable.ic_outline_download_24)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
 
             CoroutineScope(Dispatchers.Main).launch {
                 Glide.with(binding.root.context)
                     .load(item.imageUrl)
-                    .thumbnail(Glide.with(binding.root.context)
-                        .load(item.imageUrl)
-                        .apply(requestOption))
+                    .thumbnail(
+                        Glide.with(binding.root.context)
+                            .load(item.imageUrl)
+                            .apply(requestOptions)
+                    )
+                    .apply(requestOptions)
                     .into(binding.image)
             }
 

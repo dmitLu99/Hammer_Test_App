@@ -4,23 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.example.hammertestapp.R
 import com.example.hammertestapp.databinding.BannerItemBinding
-import com.example.hammertestapp.feature_menu_screen.ui.models.Banner
+import com.example.hammertestapp.feature_menu_screen.di.annotations.Banner
+import com.example.hammertestapp.feature_menu_screen.ui.models.Banner as BannerModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal class BannersAdapter @Inject constructor() :
-    RecyclerView.Adapter<BannersAdapter.BannerViewHolder>() {
+internal class BannersAdapter @Inject constructor(
+    @Banner private val requestOptions: RequestOptions
+) : RecyclerView.Adapter<BannersAdapter.BannerViewHolder>() {
 
-    private val items: MutableList<Banner> = mutableListOf()
+    private val items: MutableList<BannerModel> = mutableListOf()
 
-    fun setItems(items: List<Banner>) {
+    fun setItems(items: List<BannerModel>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
@@ -42,22 +41,20 @@ internal class BannersAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = items.size
 
-    class BannerViewHolder(private val binding: BannerItemBinding) :
+    inner class BannerViewHolder(private val binding: BannerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Banner) {
-
-            val requestOption = RequestOptions()
-                .error(R.drawable.ic_error_outline_24)
-                .placeholder(R.drawable.ic_outline_download_24)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+        fun bind(item: BannerModel) {
 
             CoroutineScope(Dispatchers.Main).launch {
                 Glide.with(binding.root.context)
                     .load(item.imageUrl)
-                    .thumbnail(Glide.with(binding.root.context)
-                        .load(item.imageUrl)
-                        .apply(requestOption))
+                    .thumbnail(
+                        Glide.with(binding.root.context)
+                            .load(item.imageUrl)
+                            .apply(requestOptions)
+                    )
+                    .apply(requestOptions)
                     .into(binding.image)
             }
         }

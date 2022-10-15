@@ -16,7 +16,7 @@ internal class DomainCategoriesToCategoriesContainerMapper @Inject constructor(
         withContext(Dispatchers.Default) {
             return@withContext CategoriesContainer(
                 categories = List(size = from.size) { index ->
-                    Category(name = from[index].name)
+                    Category(name = from[index].name, isClicked = index == 0)
                 }
             )
         }

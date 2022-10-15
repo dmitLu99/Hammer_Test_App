@@ -22,7 +22,6 @@ internal class FetchDomainModelUseCase<DI : DisplayableItem> @Inject constructor
     override suspend fun execute(): DI = withContext(Dispatchers.Default) {
 
         val domainModel = try {
-            // todo: storage & network logic
             repository.fetchData()
         } catch (e: ServerIsNotAvailableException) {
             // todo

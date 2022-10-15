@@ -13,41 +13,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 internal class MenuScreenViewModel(
-    private val fetchDomainModelUseCase: UseCase<MenuItemsContainer>,
-    private val fetchBannersUseCase: UseCase<BannersContainer>,
-    private val fetchCategoriesUseCase: UseCase<CategoriesContainer>
+    private val fetchDomainModelUseCase: dagger.Lazy<UseCase<MenuItemsContainer>>,
+    private val fetchBannersUseCase: dagger.Lazy<UseCase<BannersContainer>>,
+    private val fetchCategoriesUseCase: dagger.Lazy<UseCase<CategoriesContainer>>
 ) : ViewModel() {
-
-    val testMenuItemsContainer: MenuItemsContainer = MenuItemsContainer(listOf(
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-        MenuItem(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg",
-        title = "Title title", description = "description description description", price = 350),
-    ))
-
-    val testBannersContainer: BannersContainer = BannersContainer(listOf(
-        Banner(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg"),
-        Banner(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg"),
-        Banner(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg"),
-        Banner(imageUrl = "https://s3.eu-north-1.amazonaws.com/restoraids/media/redfood.jpg")
-    ))
-
-    val testCategoriesContainer: CategoriesContainer = CategoriesContainer(listOf(
-        Category(name = "caregory", isClicked = true),
-        Category(name = "caregory1", isClicked = false),
-        Category(name = "caregory2", isClicked = false),
-        Category(name = "caregory3", isClicked = false),
-    ))
 
     private val _bannersLiveData = MutableLiveData<BannersContainer>()
     val bannersLiveData: LiveData<BannersContainer> get() = _bannersLiveData
@@ -58,24 +27,25 @@ internal class MenuScreenViewModel(
     private val _menuItemsLiveData = MutableLiveData<MenuItemsContainer>()
     val menuItemsLiveData: LiveData<MenuItemsContainer> get() = _menuItemsLiveData
 
-    fun fetchDisplayableItems() {
-        CoroutineScope(context = Dispatchers.Default).launch {
-            // todo: handle errors
-//            _bannersLiveData.postValue(fetchBannersUseCase.execute())
-//            _categoriesLiveData.postValue(fetchCategoriesUseCase.execute())
-//            _menuItemsLiveData.postValue(fetchDomainModelUseCase.execute())
+    private val _errorStatusLiveData = MutableLiveData<Boolean>()
+    val errorStatusLiveData: LiveData<Boolean> get() = _errorStatusLiveData
 
-            _bannersLiveData.postValue(testBannersContainer)
-            _categoriesLiveData.postValue(testCategoriesContainer)
-            _menuItemsLiveData.postValue(testMenuItemsContainer)
+    fun fetchDisplayableItems() {
+        CoroutineScope(context = Dispatchers.IO).launch {
+            try {
+                _categoriesLiveData.postValue(fetchCategoriesUseCase.get().execute())
+                _bannersLiveData.postValue(fetchBannersUseCase.get().execute())
+                _menuItemsLiveData.postValue(fetchDomainModelUseCase.get().execute())
+            } catch (e: Exception) {
+                _errorStatusLiveData.postValue(true)
+            }
         }
     }
 
-
     @Suppress("UNCHECKED_CAST") class Factory @Inject constructor(
-        private val fetchDomainModelUseCase: UseCase<MenuItemsContainer>,
-        private val fetchBannersUseCase: UseCase<BannersContainer>,
-        private val fetchCategoriesUseCase: UseCase<CategoriesContainer>
+        private val fetchDomainModelUseCase: dagger.Lazy<UseCase<MenuItemsContainer>>,
+        private val fetchBannersUseCase: dagger.Lazy<UseCase<BannersContainer>>,
+        private val fetchCategoriesUseCase: dagger.Lazy<UseCase<CategoriesContainer>>
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

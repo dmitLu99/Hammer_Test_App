@@ -17,6 +17,7 @@ internal class FetchCategoriesUseCase <DI: DisplayableItem> @Inject constructor(
 ) : UseCase<DI> {
 
     override suspend fun execute(): DI {
+
         return mapper.map(from = repository.fetchData().categories)
     }
 }

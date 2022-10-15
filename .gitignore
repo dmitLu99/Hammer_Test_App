@@ -8,3 +8,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/src/main/java/com/example/hammertestapp/feature_menu_screen/data/network/utils/Config.kt
