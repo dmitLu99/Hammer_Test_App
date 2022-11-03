@@ -63,7 +63,7 @@ internal class MenuItemsAdapter @Inject constructor(
             binding.apply {
                 title.text = item.title
                 description.text = item.description
-                price.text = item.price.toString()
+                price.text = "$" + item.price.toString()
             }
         }
     }
